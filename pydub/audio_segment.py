@@ -960,7 +960,11 @@ class AudioSegment(object):
 
         # read stdin / write stdout
         with open(os.devnull, 'rb') as devnull:
-            p = subprocess.Popen(conversion_command, stdin=devnull, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            startupinfo = subprocess.STARTUPINFO()
+            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+            startupinfo.wShowWindow = subprocess.SW_HIDE
+            p = subprocess.Popen(conversion_command, startupinfo=startupinfo,
+                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         p_out, p_err = p.communicate()
 
         log_subprocess_output(p_out)

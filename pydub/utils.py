@@ -342,7 +342,11 @@ def mediainfo(filepath):
 
     if res.returncode != 0:
         command = [prober] + command_args
-        output = Popen(command, stdout=PIPE).communicate()[0].decode("utf-8")
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        startupinfo.wShowWindow = subprocess.SW_HIDE
+        res = subprocess.Popen(command, startupinfo=startupinfo,
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     rgx = re.compile(r"(?:(?P<inner_dict>.*?):)?(?P<key>.*?)\=(?P<value>.*?)$")
     info = {}
